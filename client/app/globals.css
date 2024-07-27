@@ -17,3 +17,7 @@ body {
 .auth-body {
   background: linear-gradient(180deg, #F7F7F7 0%, #F0F0F0 100%);
 }
+
+.create-task-btn {
+  background: linear-gradient(180deg, #4C38C2 0%, #2F2188 100%);
+}
