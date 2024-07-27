@@ -12,19 +12,19 @@ export const columnsData = {
     ],
     inProgress: [
         {
-            id: 1,
+            id: 2,
             title: "Design Home Page UI",
             description: "Develop and integrate user authentication using email and password.",
-            status: "inprogress",
+            status: "inProgress",
             priority: "Medium",
             deadline: "2024-08-15",
             createdAt: "1 hr ago"
         },
         {
-            id: 2,
+            id: 3,
             title: "Conduct User Feedback Survey",
             description: "Collect and analyze user feedback to improve app features.",
-            status: "todo",
+            status: "inProgress",
             priority: "Low",
             deadline: "2024-08-15",
             createdAt: "3 hr ago"
@@ -32,10 +32,10 @@ export const columnsData = {
     ],
     underReview: [
         {
-            id: 1,
+            id: 4,
             title: "Integrate Cloud Storage",
             description: "Enable cloud storage for note backup and synchronization.",
-            status: "underreview",
+            status: "underReview",
             priority: "Urgent",
             deadline: "2024-08-15",
             createdAt: "2 days ago"
@@ -43,7 +43,7 @@ export const columnsData = {
     ],
     finished: [
         {
-            id: 1,
+            id: 5,
             title: "Test Cross-browser Compatibility",
             description: "Ensure the app works seamlessly across different web browsers.",
             status: "finished",
