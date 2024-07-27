@@ -11,7 +11,7 @@ import { DownloadIcon } from '@/assets/DownloadIcon'
 
 export const Sidebar = () => {
   return (
-    <div className='w-full h-screen bg-white p-5 shadow-lg flex flex-col justify-between'>
+    <div className='fixed w-[20%] h-screen bg-white p-5 shadow-lg flex flex-col justify-between'>
         <div>
             <div className='flex gap-2 items-center'>
                 <Avatar alt="Avatar" sx={{ width: 34, height: 34 }}/>
