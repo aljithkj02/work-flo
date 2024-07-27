@@ -1,5 +1,6 @@
 import { QuestionMark } from "@/assets/QuestionMark";
 import { Advertisement } from "@/components/home/Advertisement";
+import { Columns } from "@/components/home/Columns";
 import { Header } from "@/components/home/Header";
 
 export default function Home() {
@@ -20,6 +21,8 @@ export default function Home() {
       <Advertisement />
 
       <Header />
+
+      <Columns />
     </div>
   );
 }
