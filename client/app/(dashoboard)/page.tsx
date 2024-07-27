@@ -1,5 +1,6 @@
 import { QuestionMark } from "@/assets/QuestionMark";
 import { Advertisement } from "@/components/home/Advertisement";
+import { Header } from "@/components/home/Header";
 
 export default function Home() {
 
@@ -17,6 +18,8 @@ export default function Home() {
       </div>
 
       <Advertisement />
+
+      <Header />
     </div>
   );
 }
