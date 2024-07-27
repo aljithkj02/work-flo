@@ -7,12 +7,13 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-const loginSchema = z.object({
+const signupSchema = z.object({
+    name: z.string().min(1, "Name is required"),
     email: z.string().email('Please provide a valid email'),
     password: z.string().min(8, 'Password must be at least 6 characters long'),
 });
 
-type TLoginSchema = z.infer<typeof loginSchema>;
+type TSignupSchema = z.infer<typeof signupSchema>;
 
 export default function Login() {
     const {
@@ -22,11 +23,11 @@ export default function Login() {
         reset,
         getValues,
         setValue,
-    } = useForm<TLoginSchema>({
-        resolver: zodResolver(loginSchema),
+    } = useForm<TSignupSchema>({
+        resolver: zodResolver(signupSchema),
     });
 
-    const onSubmit = async (data: TLoginSchema) => {
+    const onSubmit = async (data: TSignupSchema) => {
         console.log({data})
     };
 
@@ -41,6 +42,15 @@ export default function Login() {
 
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                            <Input  
+                                fullWidth  
+                                size="small"  
+                                placeholder="Full name"  
+                                {...register('name', { value: getValues('name') || '' })}
+                                error={Boolean(errors?.name?.message)}
+                                helperText={errors?.name?.message}
+                                onChange={(e) => setValue('name', e.target.value)}
+                            /> 
                             <Input  
                                 fullWidth  
                                 size="small"  
@@ -69,11 +79,11 @@ export default function Login() {
                                 className="p-2 bg-[#776BBE] text-white rounded-[8px] text-lg"
                                 type="submit"
                             >
-                                Login
+                                Sign up
                             </button>
 
-                            <p className="text-[#606060] text-sm text-center">Don’t have an account? Create a 
-                                <Link href="/signup" className="text-blue-600"> new account</Link>
+                            <p className="text-[#606060] text-sm text-center">Already have an account?
+                                <Link href="/login" className="text-blue-600"> Log in.</Link>
                             </p>
                         </Box>
                     </form>
