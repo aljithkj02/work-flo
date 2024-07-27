@@ -2,6 +2,7 @@
 import { EyeIcon } from "@/assets/EyeIcon";
 import { Input } from "@/components/shared/Input";
 import { Loader } from "@/components/shared/Loader";
+import { usePassword } from "@/lib/hooks/usePassword";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box } from "@mui/material";
 import Link from "next/link";
@@ -27,6 +28,7 @@ export default function Login() {
     } = useForm<TSignupSchema>({
         resolver: zodResolver(signupSchema),
     });
+    const [showPassword, toggler] = usePassword();
 
     const onSubmit = async (data: TSignupSchema) => {
         console.log({data})
@@ -65,13 +67,16 @@ export default function Login() {
                                 <Input  
                                     fullWidth  
                                     size="small"  
-                                    placeholder="Password"  
+                                    placeholder="Password"
+                                    type={showPassword ? 'text': 'password'}
                                     {...register('password', { value: getValues('password') || '' })}
                                     error={Boolean(errors?.password?.message)}
                                     helperText={errors?.password?.message}
                                     onChange={(e) => setValue('password', e.target.value)}
                                 />  
-                                <div className="absolute right-3 top-3 cursor-pointer">
+                                <div className="absolute right-3 top-3 cursor-pointer"
+                                    onClick={toggler}
+                                >
                                     <EyeIcon />
                                 </div>
                             </div> 
