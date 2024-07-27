@@ -1,6 +1,7 @@
 "use client"
 import { EyeIcon } from "@/assets/EyeIcon";
 import { Input } from "@/components/shared/Input";
+import { Loader } from "@/components/shared/Loader";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box } from "@mui/material";
 import Link from "next/link";
@@ -9,7 +10,7 @@ import { z } from "zod";
 
 const loginSchema = z.object({
     email: z.string().email('Please provide a valid email'),
-    password: z.string().min(8, 'Password must be at least 6 characters long'),
+    password: z.string().min(6, 'Password must be at least 6 characters long'),
 });
 
 type TLoginSchema = z.infer<typeof loginSchema>;
@@ -79,6 +80,8 @@ export default function Login() {
                     </form>
                 </div>
             </div>
+
+            { isSubmitting && <Loader /> }
         </div>
     );
   }
