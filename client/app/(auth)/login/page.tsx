@@ -3,18 +3,11 @@ import { EyeIcon } from "@/assets/EyeIcon";
 import { Input } from "@/components/shared/Input";
 import { Loader } from "@/components/shared/Loader";
 import { usePassword } from "@/lib/hooks/usePassword";
+import { loginSchema, TLoginSchema } from "@/utils/validators/auth.validator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box } from "@mui/material";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-
-const loginSchema = z.object({
-    email: z.string().email('Please provide a valid email'),
-    password: z.string().min(6, 'Password must be at least 6 characters long'),
-});
-
-type TLoginSchema = z.infer<typeof loginSchema>;
 
 export default function Login() {
     const {
