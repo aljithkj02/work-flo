@@ -4,7 +4,7 @@ import { RightArrow } from '@/assets/RightArrow'
 import { SunIcon } from '@/assets/Sun'
 import { Avatar } from '@mui/material'
 import { sidebarData } from '@/utils/constants/sidebarInfo'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { AddIcon } from '@/assets/AddIcon'
 import { DownloadIcon } from '@/assets/DownloadIcon'
@@ -13,6 +13,9 @@ import { useAppSelector } from '@/lib/hooks/store.hook'
 
 export const Sidebar = () => {
     const user = useAppSelector(state => state.global.user);
+    const [client, setClient] = useState(false);
+
+    useEffect(() => setClient(true), []);
 
     return (
         <div className='fixed w-[20%] h-screen bg-white p-5 shadow-lg flex flex-col justify-between'>
@@ -20,7 +23,7 @@ export const Sidebar = () => {
                 <div className='flex gap-2 items-center'>
                     <Avatar alt={user?.name || "Avatar"} sx={{ width: 34, height: 34 }}/>
                     <p className='text-[#080808] text-lg font-semibold'>
-                        { user?.name || "User" }
+                        { client ? user?.name : "User" }
                     </p>
                 </div>
 

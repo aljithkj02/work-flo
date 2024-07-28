@@ -1,9 +1,13 @@
 "use client"
 import { Data, SingleColumn } from "@/components/home/SingleColumn"
+import { setUser } from "@/lib/appStore/slices/global.slice";
+import { useAppDispatch } from "@/lib/hooks/store.hook";
+import { getTasks } from "@/services/task.service";
 import { columnsData as data } from "@/utils/constants/columnsInfo"
 import { DndContext, DragEndEvent } from "@dnd-kit/core"
 import { restrictToWindowEdges } from '@dnd-kit/modifiers';
-import { useState } from "react"
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react"
 
 enum Keys {
     TODO = 'todo',
@@ -14,6 +18,20 @@ enum Keys {
 
 export const Columns = () => {
     const [columnsData, setColumnsData] = useState(data);
+    const router = useRouter();
+    const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        fetchTasks();
+    }, [])
+
+    const fetchTasks = async () => {
+        const res = await getTasks();
+        if (!res) {
+            dispatch(setUser(null));
+            router.push('/login');
+        }
+    }
 
     const handleOnDragEnd = (e: DragEndEvent) => {
         const newItem = e.active.data.current;

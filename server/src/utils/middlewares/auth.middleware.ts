@@ -16,6 +16,6 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
             return res.status(500).json({ status: false, message: 'Internal server error.' });
         }
     } else {
-        res.status(401).json({ status: false, message: 'Unauthorized' });
+        res.status(401).json({ status: false, message: 'Unauthorized user' });
     }
 };
