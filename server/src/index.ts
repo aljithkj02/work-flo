@@ -1,6 +1,7 @@
 import Express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
+import { connectDb } from '@/db';
 
 dotenv.config();
 const port = process.env.PORT;
@@ -14,5 +15,6 @@ app.get('/', (req, res) =>  {
 })
 
 app.listen(port, () => {
+    connectDb();
     console.log("Server has started on Port", port);
 })
