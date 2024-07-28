@@ -2,6 +2,8 @@
 import { EyeIcon } from "@/assets/EyeIcon";
 import { Input } from "@/components/shared/Input";
 import { Loader } from "@/components/shared/Loader";
+import { setUser } from "@/lib/appStore/slices/global.slice";
+import { useAppDispatch } from "@/lib/hooks/store.hook";
 import { usePassword } from "@/lib/hooks/usePassword";
 import { loginUser } from "@/services/auth.service";
 import { loginSchema, TLoginSchema } from "@/utils/validators/auth.validator";
@@ -25,10 +27,13 @@ export default function Login() {
 
     const [showPassword, toggler] = usePassword();
     const router = useRouter();
+    const dispatch = useAppDispatch();
 
     const onSubmit = async (data: TLoginSchema) => {
         const res = await loginUser(data);
         if (res) {
+            dispatch(setUser(res.user));
+            localStorage.setItem('user', JSON.stringify(res.user));
             router.push('/');
         }
     };

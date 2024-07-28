@@ -5,7 +5,7 @@ import { DrawerHeader } from "@/components/shared/DrawerHeader";
 import { DrawerBody } from "./DrawerBody";
 
 export const Drawer = () => {
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
 
     const toggleDrawer = (value: boolean) => {
         setOpen(value);
