@@ -70,3 +70,14 @@ export const handleLogin = async (req: Request, res: Response) => {
       }
     }
 }
+
+export const handleLogout = async (req: Request, res: Response) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Error destroying session:', err);
+            return res.status(500).json({ status: false, message: 'Failed to log out' });
+        }
+        res.clearCookie('connect.sid');
+        return res.status(200).json({ status: true, message: 'Logout successful' });
+    });
+}
