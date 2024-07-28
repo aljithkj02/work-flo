@@ -8,14 +8,28 @@ import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { AddIcon } from '@/assets/AddIcon'
 import { DownloadIcon } from '@/assets/DownloadIcon'
-import { useAppSelector } from '@/lib/hooks/store.hook'
+import { useAppDispatch, useAppSelector } from '@/lib/hooks/store.hook'
+import { logoutUser } from '@/services/auth.service'
+import { useRouter } from 'next/navigation'
+import { setUser } from '@/lib/appStore/slices/global.slice'
 
 
 export const Sidebar = () => {
     const user = useAppSelector(state => state.global.user);
     const [client, setClient] = useState(false);
 
+    const router = useRouter();
+    const dispatch = useAppDispatch();
+
     useEffect(() => setClient(true), []);
+
+    const logoutHandler = async () => {
+        const res = await logoutUser();
+        if (res) {
+            dispatch(setUser(null));
+            router.push('/login');
+        }
+    }
 
     return (
         <div className='fixed w-[20%] h-screen bg-white p-5 shadow-lg flex flex-col justify-between'>
@@ -35,7 +49,7 @@ export const Sidebar = () => {
                     </div>
 
                     <div>
-                        <button className='bg-[#F4F4F4] p-2 rouned-md text-[#797979]'>Logout</button>
+                        <button className='bg-[#F4F4F4] p-2 rouned-md text-[#797979]' onClick={logoutHandler}>Logout</button>
                     </div>
                 </div>
 

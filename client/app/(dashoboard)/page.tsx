@@ -4,10 +4,16 @@ import { Advertisement } from "@/components/home/Advertisement";
 import { Columns } from "@/components/home/Columns";
 import { Header } from "@/components/home/Header";
 import { Drawer } from "@/components/shared/Drawer";
-import { useState } from "react";
+import { useAppSelector } from "@/lib/hooks/store.hook";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+    const user = useAppSelector(state => state.global.user);
+    const [client, setClient] = useState(false);
     const [open, setOpen] = useState(false);
+
+    useEffect(() => setClient(true), []);
+    
 
     const toggleDrawer = (value: boolean) => {
         setOpen(value);
@@ -17,7 +23,7 @@ export default function Home() {
         <div >
             <div className="flex items-center justify-between">
                 <div>
-                    <p className="text-[40px] font-semibold">Good morning, Joe!</p>
+                    <p className="text-[40px] font-semibold">Good morning, {client ? user?.name : ''}!</p>
                 </div>
 
                 <div className="flex items-center gap-2 cursor-pointer">

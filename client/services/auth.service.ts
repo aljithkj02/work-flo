@@ -44,3 +44,25 @@ export const loginUser = async (payload: TLoginSchema) => {
         return null;
     }
 }
+
+export const logoutUser = async () => {
+    try {
+        const response = await api.get('auth/logout');
+
+        toast.dismiss();
+        toast.success(response.data.message);
+        localStorage.removeItem('user');
+        
+        return true;
+    } catch (error) {
+        if (isAxiosError(error)) {
+            const response: ErrorResponseType = error.response as ErrorResponseType;
+            toast.dismiss();
+            toast.error(response.data.message);
+            return false;
+        }
+        console.log((error as Error).message);
+
+        return false;
+    }
+}
