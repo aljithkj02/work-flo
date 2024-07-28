@@ -2,6 +2,7 @@
 import { Data, SingleColumn } from "@/components/home/SingleColumn"
 import { columnsData as data } from "@/utils/constants/columnsInfo"
 import { DndContext, DragEndEvent } from "@dnd-kit/core"
+import { restrictToWindowEdges } from '@dnd-kit/modifiers';
 import { useState } from "react"
 
 enum Keys {
@@ -9,7 +10,7 @@ enum Keys {
     IN_PROGRESS = 'inProgress',
     FINISHED = 'finished',
     UNDER_REVIEW = 'underReview'
-}
+} 
 
 export const Columns = () => {
     const [columnsData, setColumnsData] = useState(data);
@@ -36,7 +37,7 @@ export const Columns = () => {
 
     return (
         <div className="grid grid-cols-4 rounded-lg bg-white">
-            <DndContext onDragEnd={handleOnDragEnd}>
+            <DndContext onDragEnd={handleOnDragEnd} modifiers={[restrictToWindowEdges]} >
                 <SingleColumn 
                     id="todo"
                     colName="To Do"
