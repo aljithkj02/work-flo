@@ -3,10 +3,12 @@ import { EyeIcon } from "@/assets/EyeIcon";
 import { Input } from "@/components/shared/Input";
 import { Loader } from "@/components/shared/Loader";
 import { usePassword } from "@/lib/hooks/usePassword";
+import { signupUser } from "@/services/auth.service";
 import { signupSchema, TSignupSchema } from "@/utils/validators/auth.validator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box } from "@mui/material";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 export default function Login() {
@@ -21,9 +23,13 @@ export default function Login() {
         resolver: zodResolver(signupSchema),
     });
     const [showPassword, toggler] = usePassword();
+    const router = useRouter();
 
     const onSubmit = async (data: TSignupSchema) => {
-        console.log({data})
+        const res = await signupUser(data);
+        if (res) {
+            router.push('/login');
+        }
     };
 
     return (

@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import "./globals.css";
 import StoreProvider from "@/lib/appStore/StoreProvider";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,6 +23,7 @@ export default function RootLayout({
         <StoreProvider>
           <AppRouterCacheProvider>
             {children}
+            <Toaster />
           </AppRouterCacheProvider>
         </StoreProvider>
       </body>
