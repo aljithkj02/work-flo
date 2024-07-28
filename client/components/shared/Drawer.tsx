@@ -4,7 +4,7 @@ import { useState } from "react"
 import { DrawerHeader } from "@/components/shared/DrawerHeader";
 import { DrawerBody } from "./DrawerBody";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/store.hook";
-import { setIsDrawer } from "@/lib/appStore/slices/global.slice";
+import { clearTaskData, setIsDrawer } from "@/lib/appStore/slices/global.slice";
 
 export const Drawer = () => {
     const open = useAppSelector(state => state.global.isDrawerOpen);
@@ -12,6 +12,7 @@ export const Drawer = () => {
 
     const closeDrawer = () => {
         dispatch(setIsDrawer(false));
+        dispatch(clearTaskData());
     };
 
     return (
