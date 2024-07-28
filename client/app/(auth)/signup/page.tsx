@@ -80,8 +80,8 @@ export default function Login() {
                             </div> 
 
                             <button
-                                className="p-2 bg-[#776BBE] text-white rounded-[8px] text-lg"
                                 type="submit"
+                                className="p-2 bg-[#776BBE] text-white rounded-[8px] text-lg"
                             >
                                 Sign up
                             </button>
