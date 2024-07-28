@@ -11,7 +11,10 @@ const app = Express();
 app.use(cors());
 
 app.get('/', (req, res) =>  {
-    res.json({message: "Welcome to my Server"})
+    res.json({
+        status: true,
+        message: "Welcome to my server!"
+    })
 })
 
 app.listen(port, () => {
