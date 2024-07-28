@@ -1,0 +1,6 @@
+{
+    "watch": ["src"],
+    "ext": "ts,tsx",
+    "exec": "node -r esbuild-register src/index.ts"
+}
+  
