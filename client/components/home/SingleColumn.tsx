@@ -4,6 +4,8 @@ import { PlusIcon } from '@/assets/PlusIcon'
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import React, { ReactNode } from 'react'
 import { CSS } from "@dnd-kit/utilities"
+import { useAppDispatch } from '@/lib/hooks/store.hook';
+import { setIsDrawer } from '@/lib/appStore/slices/global.slice';
 
 export interface Data {
     id: number,
@@ -50,6 +52,12 @@ const Droppable = ({ children, id }: { children: ReactNode, id: string }) => {
 }
 
 export const SingleColumn = ({ colName, data, id }: SingleColumnProps) => {
+
+    const dispatch = useAppDispatch();
+
+    const openDrawer = () => {
+        dispatch(setIsDrawer(true));
+    }
 
     return (
         <div className="col-span-1 p-3">
@@ -99,7 +107,9 @@ export const SingleColumn = ({ colName, data, id }: SingleColumnProps) => {
             </Droppable>
 
             <div>
-                <button className="flex items-center justify-between w-full px-3 py-2 rounded-lg column-add-btn">
+                <button className="flex items-center justify-between w-full px-3 py-2 rounded-lg column-add-btn"
+                    onClick={openDrawer}
+                >
                     <p className="text-white text-[16px]">Add new</p> 
                     <PlusIcon />
                 </button>

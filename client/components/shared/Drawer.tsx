@@ -3,12 +3,15 @@ import { Box, Drawer as DrawerComp } from "@mui/material"
 import { useState } from "react"
 import { DrawerHeader } from "@/components/shared/DrawerHeader";
 import { DrawerBody } from "./DrawerBody";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/store.hook";
+import { setIsDrawer } from "@/lib/appStore/slices/global.slice";
 
 export const Drawer = () => {
-    const [open, setOpen] = useState(false);
+    const open = useAppSelector(state => state.global.isDrawerOpen);
+    const dispatch = useAppDispatch();
 
-    const toggleDrawer = (value: boolean) => {
-        setOpen(value);
+    const closeDrawer = () => {
+        dispatch(setIsDrawer(false));
     };
 
     return (
@@ -22,7 +25,7 @@ export const Drawer = () => {
             >
                 <div className="p-5">
                     <DrawerHeader
-                        onClose={() => toggleDrawer(true)}
+                        onClose={closeDrawer}
                     />
 
                     <DrawerBody />

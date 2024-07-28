@@ -1,6 +1,6 @@
 "use client"
 import { Data, SingleColumn } from "@/components/home/SingleColumn"
-import { setUser } from "@/lib/appStore/slices/global.slice";
+import { setLoading, setUser } from "@/lib/appStore/slices/global.slice";
 import { useAppDispatch } from "@/lib/hooks/store.hook";
 import { getTasks } from "@/services/task.service";
 import { columnsData as data } from "@/utils/constants/columnsInfo"
@@ -26,11 +26,13 @@ export const Columns = () => {
     }, [])
 
     const fetchTasks = async () => {
+        dispatch(setLoading(true));
         const res = await getTasks();
         if (!res) {
             dispatch(setUser(null));
             router.push('/login');
         }
+        dispatch(setLoading(false));
     }
 
     const handleOnDragEnd = (e: DragEndEvent) => {

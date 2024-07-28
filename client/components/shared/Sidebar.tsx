@@ -11,7 +11,7 @@ import { DownloadIcon } from '@/assets/DownloadIcon'
 import { useAppDispatch, useAppSelector } from '@/lib/hooks/store.hook'
 import { logoutUser } from '@/services/auth.service'
 import { useRouter } from 'next/navigation'
-import { setUser } from '@/lib/appStore/slices/global.slice'
+import { setIsDrawer, setUser } from '@/lib/appStore/slices/global.slice'
 
 
 export const Sidebar = () => {
@@ -29,6 +29,10 @@ export const Sidebar = () => {
             dispatch(setUser(null));
             router.push('/login');
         }
+    }
+
+    const openDrawer = () => {
+        dispatch(setIsDrawer(true));
     }
 
     return (
@@ -69,7 +73,9 @@ export const Sidebar = () => {
                 </div>
 
                 <div className='mt-3'>
-                    <button className='create-task-btn text-white p-[12px] flex items-center justify-center w-full text-lg gap-3 font-semibold rounded-lg'>
+                    <button className='create-task-btn text-white p-[12px] flex items-center justify-center w-full text-lg gap-3 font-semibold rounded-lg'
+                        onClick={openDrawer}
+                    >
                         Create new task
                         <AddIcon />
                     </button>

@@ -5,32 +5,73 @@ import { DescriptionIcon } from "@/assets/DescriptionIcon"
 import { PriorityIcon } from "@/assets/PriorityIcon"
 import { StatusIcon } from "@/assets/StatusIcon"
 import { Input } from "@/components/shared/Input"
-import { Divider, MenuItem } from "@mui/material"
-import { useState } from "react"
+import { Divider, MenuItem, SelectChangeEvent } from "@mui/material"
+import { ChangeEvent, useState } from "react"
 import { Select } from "@/components/shared/Select"
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { StyledDatePicker } from "@/components/shared/StyledDatePicker"
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/store.hook"
+import { PriorityEnum, StatusEnum, TaskKeysEnum } from "@/utils/enums/task.enum"
+import { setTaskData } from "@/lib/appStore/slices/global.slice"
+import toast from "react-hot-toast"
 
 export const DrawerBody = () => {
-
-    const [status, setStatus] = useState("0");
-    const [priority, setPriority] = useState("0");
-    const [selectedDate, setSelectedDate] = useState(null);
+    const taskData = useAppSelector(state => state.global.taskData);
     const today = dayjs();
+
+    const dispatch = useAppDispatch();
 
 
     const handleDateChange = (date: any) => {
-        setSelectedDate(date);
         const readableDate = dayjs(date).format('DD/MM/YYYY');
-        console.log(readableDate)
+        dispatch(setTaskData({ name: TaskKeysEnum.DEADLINE, value: readableDate }));
     };
+
+    const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const name = e.target.name;
+        const value = e.target.value;
+
+        dispatch(setTaskData({ name, value }));
+    }
+
+    const handleSelctOnChange = (e: SelectChangeEvent<unknown>) => {
+        const name = e.target.name;
+        const value = e.target.value;
+
+        dispatch(setTaskData({ name, value }));
+    }
+
+    const handleSave = () => {
+        if (!taskData.title) {
+            toast.dismiss();
+            toast.error("Title cannot be empty!");
+            return;
+        } else if (!taskData.status || taskData.status === "0") {
+            toast.dismiss();
+            toast.error("Status cannot be empty!");
+            return;
+        } 
+
+        const payload = {
+            title: taskData.title,
+            status: taskData.status,
+            ...((taskData.priority && taskData.priority !== "0") && { priority: taskData.priority}),
+            ...(taskData.description && { description: taskData.description }),
+            ...(taskData.deadline && { deadline: taskData.deadline })
+        }
+
+        console.log(payload)
+    }
 
     return (
         <div className="py-6">
             <Input 
                 placeholder='Title'
+                value={taskData.title}
+                name={TaskKeysEnum.TITLE}
+                onChange={handleOnChange}
                 sx={{
                     '& .MuiInputBase-input': {  
                         backgroundColor: 'white',
@@ -52,14 +93,16 @@ export const DrawerBody = () => {
                     </div>
 
                     <div className="w-[70%]">
-                        <Select size="small" value={status} onChange={(e) => setStatus(e.target.value as string)} >
+                        <Select size="small" value={taskData.status || "0"} onChange={handleSelctOnChange}
+                            name={TaskKeysEnum.STATUS}
+                        >
                             <MenuItem value={"0"}>
                                 <p className="text-[#C1BDBD] cursor-pointer">Not selected</p>
                             </MenuItem>
-                            <MenuItem value={"todo"}>To Do</MenuItem>
-                            <MenuItem value={"inprogress"}>In Progress</MenuItem>
-                            <MenuItem value={"underreview"}>Under Review</MenuItem>
-                            <MenuItem value={"finished"}>Finished</MenuItem>
+                            <MenuItem value={StatusEnum.TODO}>To Do</MenuItem>
+                            <MenuItem value={StatusEnum.IN_PROGRESS}>In Progress</MenuItem>
+                            <MenuItem value={StatusEnum.UNDER_REVIEW}>Under Review</MenuItem>
+                            <MenuItem value={StatusEnum.FINISHED}>Finished</MenuItem>
                         </Select>
                     </div>
                 </div>
@@ -71,21 +114,23 @@ export const DrawerBody = () => {
                     </div>
 
                     <div className="w-[70%]">
-                        <Select size="small" value={priority} onChange={(e) => setPriority(e.target.value as string)} >
+                        <Select size="small" value={taskData.priority || "0"} onChange={handleSelctOnChange} 
+                            name={TaskKeysEnum.PRIORITY}
+                        >
                             <MenuItem value={"0"}>
                                 <p className="text-[#C1BDBD] cursor-pointer">Not selected</p>
                             </MenuItem>
-                            <MenuItem value={"low"}>
+                            <MenuItem value={PriorityEnum.LOW}>
                                 <div className={`bg-[#0ECC5A] px-2 py-[2px] inline-block rounded-lg`}>
                                     <p className="text-white font-[400] text-[12px]"> Low </p>
                                 </div>
                             </MenuItem>
-                            <MenuItem value={"medium"}>
+                            <MenuItem value={PriorityEnum.MEDIUM}>
                                 <div className={`bg-[#FFA235] px-2 py-[2px] inline-block rounded-lg`}>
                                     <p className="text-white font-[400] text-[12px]"> Medium </p>
                                 </div>
                             </MenuItem>
-                            <MenuItem value={"urgent"}>
+                            <MenuItem value={PriorityEnum.URGENT}>
                                 <div className={`bg-[#FF6B6B] px-2 py-[2px] inline-block rounded-lg`}>
                                     <p className="text-white font-[400] text-[12px]"> Urgent </p>
                                 </div>
@@ -105,7 +150,7 @@ export const DrawerBody = () => {
                             <StyledDatePicker 
                                 minDate={today}
                                 format='DD/MM/YYYY'
-                                value={selectedDate}
+                                value={dayjs(taskData.deadline)}
                                 onChange={handleDateChange}
                             />
                         </LocalizationProvider>
@@ -119,7 +164,10 @@ export const DrawerBody = () => {
                     </div>
 
                     <div className="w-[70%]">
-                        <Input 
+                        <Input
+                            name={TaskKeysEnum.DESCRIPTION}
+                            value={taskData.description}
+                            onChange={handleOnChange}
                             placeholder='Not selected'
                             sx={{
                                 '& .MuiInputBase-input': {  
@@ -139,6 +187,19 @@ export const DrawerBody = () => {
             <div className="mt-4 flex items-center gap-4 font-[400] text-[16px]">
                 <AddIconBlack />
                 <p>Add custom property</p>
+            </div>
+
+            <div className="flex justify-end mt-2 gap-5">
+                <button className="px-4 py-[6px] bg-blue-500 text-white rounded-lg font-medium disabled:bg-blue-400"
+                    onClick={handleSave}
+                >
+                    Save
+                </button>
+                <button className="px-3 py-[6px] bg-red-500 text-white rounded-lg font-medium disabled:bg-red-400" 
+                    disabled
+                >
+                    Delete
+                </button>
             </div>
 
             <Divider sx={{
