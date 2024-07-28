@@ -2,6 +2,7 @@
 import { Box, Drawer as DrawerComp } from "@mui/material"
 import { useState } from "react"
 import { DrawerHeader } from "@/components/shared/DrawerHeader";
+import { DrawerBody } from "./DrawerBody";
 
 export const Drawer = () => {
     const [open, setOpen] = useState(true);
@@ -16,15 +17,15 @@ export const Drawer = () => {
             open={open}
         >
             <Box
-                sx={{ width: 600 }}
+                sx={{ width: 650 }}
                 role="presentation"
-                onClick={() => toggleDrawer(false)}
             >
                 <div className="p-5">
                     <DrawerHeader
-                        onClose={() => toggleDrawer(false)}
+                        onClose={() => toggleDrawer(true)}
                     />
 
+                    <DrawerBody />
                 </div>
             </Box>
         </DrawerComp>
