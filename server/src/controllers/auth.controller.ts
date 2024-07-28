@@ -28,7 +28,7 @@ export const handleSignup = async (req: Request, res: Response) => {
       if (error instanceof ZodError) {
             return res.status(400).json(handleZodError(error));
       } else {
-            return res.status(500).json({ message: 'Internal Server Error' });
+            return res.status(500).json({ status: false, message: 'Internal Server Error' });
       }
     }
 }
@@ -66,7 +66,7 @@ export const handleLogin = async (req: Request, res: Response) => {
       if (error instanceof ZodError) {
             return res.status(400).json(handleZodError(error));
       } else {
-            return res.status(500).json({ message: 'Internal Server Error' });
+            return res.status(500).json({ status: false, message: 'Internal Server Error' });
       }
     }
 }
