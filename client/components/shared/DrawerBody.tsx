@@ -16,7 +16,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks/store.hook"
 import { PriorityEnum, StatusEnum, TaskKeysEnum } from "@/utils/enums/task.enum"
 import { clearTaskData, setIsDrawer, setRefresh, setTaskDataChange } from "@/lib/appStore/slices/global.slice"
 import toast from "react-hot-toast"
-import { createTask } from "@/services/task.service"
+import { createTask, updateTask } from "@/services/task.service"
 import { AddTaskInput } from "@/utils/types/task.type"
 
 export const DrawerBody = () => {
@@ -27,7 +27,7 @@ export const DrawerBody = () => {
 
 
     const handleDateChange = (date: any) => {
-        const readableDate = dayjs(date).format('DD/MM/YYYY');
+        const readableDate = dayjs(date).format('MM/DD/YYYY');
         dispatch(setTaskDataChange({ name: TaskKeysEnum.DEADLINE, value: readableDate }));
     };
 
@@ -55,22 +55,21 @@ export const DrawerBody = () => {
             toast.error("Status cannot be empty!");
             return;
         }
-        
-        let deadlineString: string = "";
-        if (taskData.deadline) {
-            const [day, month, year] = taskData.deadline.split('/').map(Number);
-            deadlineString = `${month}/${day}/${year}`;
-        }
 
         const payload = {
             title: taskData.title,
             status: taskData.status,
-            ...((taskData.priority && taskData.priority !== "0") && { priority: taskData.priority}),
-            ...(taskData.description && { description: taskData.description }),
-            ...(deadlineString && { deadline: deadlineString })
+            description: taskData.description || '',
+            deadline: taskData.deadline || '',
+            priority: taskData.priority === "0" ? '' : taskData.priority
         }
 
-        const res = await createTask(payload as AddTaskInput);
+        let res: boolean;
+        if (isUpdate) {
+            res = await updateTask(taskData._id as string, payload as Partial<AddTaskInput>);
+        } else {
+            res = await createTask(payload as AddTaskInput);
+        }
         
         if (res) {
             dispatch(setRefresh());
@@ -78,6 +77,8 @@ export const DrawerBody = () => {
             dispatch(setIsDrawer(false));
         }
     }
+
+    console.log({taskData})
 
     return (
         <div className="py-6">
@@ -206,11 +207,11 @@ export const DrawerBody = () => {
             <div className="flex justify-end mt-2 gap-5">
                 { 
                     taskData._id ? ( <button className="px-4 py-[6px] bg-blue-500 text-white rounded-lg font-medium disabled:bg-blue-400"
-                        onClick={() => handleSave(false)}
+                        onClick={() => handleSave(true)}
                     >
                         Update
                     </button> ) : ( <button className="px-4 py-[6px] bg-blue-500 text-white rounded-lg font-medium disabled:bg-blue-400"
-                        onClick={() => handleSave(true)}
+                        onClick={() => handleSave(false)}
                     >
                         Save
                     </button> ) 

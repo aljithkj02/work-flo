@@ -2,12 +2,13 @@
 export enum PriorityEnum {
     LOW = 'low',
     MEDIUM = 'medium',
-    URGENT = 'urgent'
+    URGENT = 'urgent',
+    EMPTY = ''
 }
 
 export enum StatusEnum {
     TODO = 'todo',
     IN_PROGRESS = 'inprogress',
     UNDER_REVIEW = 'underreview',
-    FINISHED = 'finished'
+    FINISHED = 'finished',
 }

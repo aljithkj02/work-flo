@@ -16,8 +16,7 @@ const TaskSchema: Schema<ITask> = new Schema(
       enum: PriorityEnum
     },
     deadline: {
-      type: Date,
-      default: null,
+      type: String,
     },
     status: {
       type: String,
