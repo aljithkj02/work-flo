@@ -108,7 +108,7 @@ export const SingleColumn = ({ colName, data, id }: SingleColumnProps) => {
             </Droppable>
 
             <div>
-                <button className="flex items-center justify-between w-full px-3 py-2 rounded-lg column-add-btn"
+                <button className="flex items-center justify-between w-full px-3 py-2 my-4 rounded-lg column-add-btn"
                     onClick={openDrawer}
                 >
                     <p className="text-white text-[16px]">Add new</p> 

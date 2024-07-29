@@ -1,18 +1,17 @@
 "use client"
 import { SingleColumn } from "@/components/home/SingleColumn"
-import { setData, setLoading, setUser } from "@/lib/appStore/slices/global.slice";
+import { setData, setLoading, setRefresh, setUser } from "@/lib/appStore/slices/global.slice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/store.hook";
-import { getTasks } from "@/services/task.service";
+import { getTasks, updateTask } from "@/services/task.service";
 import { StatusEnum } from "@/utils/enums/task.enum";
 import { ITask } from "@/utils/types/task.type";
 import { DndContext, DragEndEvent } from "@dnd-kit/core"
 import { restrictToWindowEdges } from '@dnd-kit/modifiers';
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 
 export const Columns = () => {
     const {data, refresh} = useAppSelector(state => state.global);
-    const [columnsData, setColumnsData] = useState(data);
     const router = useRouter();
     const dispatch = useAppDispatch();
 
@@ -32,24 +31,20 @@ export const Columns = () => {
         dispatch(setData(res.data));
     }
 
-    const handleOnDragEnd = (e: DragEndEvent) => {
-        const newItem = e.active.data.current;
-        const key = e.over?.id;
+    const handleOnDragEnd = async (e: DragEndEvent) => {
+        const newItem: ITask = e.active.data.current as ITask;
+        const key: StatusEnum = e.over?.id as StatusEnum;
         if (!key || !newItem) return;
-        if ((key as string).toLowerCase() === (newItem as ITask).status) return;
+        if ((key as string).toLowerCase() === newItem.status) return;
 
         console.log({newItem, key})
-
-        const temp = { ...columnsData };
-
-        // temp[key as Keys].push({
-        //     ...newItem as Data,
-        //     status: key as Keys
-        // })
-
-        // temp[(newItem as Data).status as Keys] = temp[(newItem as Data).status as Keys].filter((item) => item.id !== (newItem as Data).id);
-
-        // setColumnsData(temp);
+        dispatch(setLoading(true));
+        await updateTask(newItem._id as string, {
+            ...newItem,
+            status: key
+        }, true)
+        dispatch(setLoading(false));
+        dispatch(setRefresh());
     }
 
     return (

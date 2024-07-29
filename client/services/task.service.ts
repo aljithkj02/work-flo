@@ -64,12 +64,14 @@ export const deleteTask = async (id: string) => {
     }
 }
 
-export const updateTask = async (id: string, payload: Partial<AddTaskInput>) => {
+export const updateTask = async (id: string, payload: AddTaskInput, isDrag?: boolean) => {
     try {
         const response = await api.post<AddTaskResponse>(`/task/${id}`, payload);
 
-        toast.dismiss();
-        toast.success(response.data.message);
+        if (!isDrag) {
+            toast.dismiss();
+            toast.success(response.data.message);
+        }
         
         return true;
     } catch (error) {

@@ -3,8 +3,8 @@ import { PriorityEnum, StatusEnum } from "@/utils/enums/task.enum";
 export interface ITask {
     _id?: string;
     title: string;
-    status: string;
-    priority: string;
+    status: StatusEnum | '';
+    priority: PriorityEnum | '';
     deadline: string;
     description: string;
     createdAt?: string;
@@ -13,8 +13,8 @@ export interface ITask {
 
 export interface AddTaskInput {
     title: string;
-    status: StatusEnum;
-    priority?: PriorityEnum;
+    status: StatusEnum | '';
+    priority?: PriorityEnum | '';
     deadline?: string;
     description?: string;
 }
