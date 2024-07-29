@@ -28,3 +28,5 @@ export interface AddTaskResponse {
     status: boolean;
     message: string;
 }
+
+export interface DeleteTaskResponse extends AddTaskResponse {};

@@ -83,3 +83,39 @@ export const handleCreateTask = async (req: Request, res: Response) => {
         }
     }
 }
+
+export const handleDeleteTask = async (req: Request, res: Response) => {
+    try {
+        const id = req.params.id;
+
+        const task = await Task.findById(id);
+
+        if (!task) {
+            return res.status(404).json({
+                success: false,
+                message: 'Task not found',
+            });
+        }
+
+        if (task.createdBy.toString() !== req.user?._id?.toString()) {
+            return res.status(403).json({
+                success: false,
+                message: 'You are not authorized to delete this task',
+            });
+        }
+
+        await Task.findByIdAndDelete(id);
+
+        return res.status(201).json({
+            status: true,
+            message: "Task deleted successfully"
+        })
+    } catch (error) {
+        if (error instanceof ZodError) {
+              return res.status(400).json(handleZodError(error));
+        } else {
+            console.log(error)
+              return res.status(500).json({ status: false, message: 'Internal Server Error' });
+        }
+    }
+}

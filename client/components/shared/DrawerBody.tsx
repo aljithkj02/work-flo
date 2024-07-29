@@ -14,9 +14,9 @@ import dayjs from 'dayjs';
 import { StyledDatePicker } from "@/components/shared/StyledDatePicker"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/store.hook"
 import { PriorityEnum, StatusEnum, TaskKeysEnum } from "@/utils/enums/task.enum"
-import { clearTaskData, setIsDrawer, setRefresh, setTaskDataChange } from "@/lib/appStore/slices/global.slice"
+import { clearTaskData, setIsDrawer, setLoading, setRefresh, setTaskDataChange } from "@/lib/appStore/slices/global.slice"
 import toast from "react-hot-toast"
-import { createTask, updateTask } from "@/services/task.service"
+import { createTask, deleteTask, updateTask } from "@/services/task.service"
 import { AddTaskInput } from "@/utils/types/task.type"
 
 export const DrawerBody = () => {
@@ -64,6 +64,7 @@ export const DrawerBody = () => {
             priority: taskData.priority === "0" ? '' : taskData.priority
         }
 
+        dispatch(setLoading(true));
         let res: boolean;
         if (isUpdate) {
             res = await updateTask(taskData._id as string, payload as Partial<AddTaskInput>);
@@ -76,6 +77,21 @@ export const DrawerBody = () => {
             dispatch(clearTaskData());
             dispatch(setIsDrawer(false));
         }
+        dispatch(setLoading(false));
+    }
+
+    const handleDeleteTask = async () => {
+        if (!taskData._id) return;
+        dispatch(setLoading(true));
+
+        const res = await deleteTask(taskData._id);
+        
+        if (res) {
+            dispatch(setRefresh());
+            dispatch(clearTaskData());
+            dispatch(setIsDrawer(false));
+        }
+        dispatch(setLoading(false));
     }
 
     console.log({taskData})
@@ -217,7 +233,9 @@ export const DrawerBody = () => {
                     </button> ) 
                 }
 
-                { taskData._id && <button className="px-3 py-[6px] bg-red-500 text-white rounded-lg font-medium">
+                { taskData._id && <button className="px-3 py-[6px] bg-red-500 text-white rounded-lg font-medium"
+                    onClick={handleDeleteTask}
+                >
                     Delete
                 </button> }
             </div>
