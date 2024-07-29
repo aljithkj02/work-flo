@@ -12,6 +12,34 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
 
+  client:
+    image: workflo-client:latest
+    container_name: workflo-client
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_BACKEND_URL: 'http://localhost:8000/api'
+    depends_on:
+      - server
+
+  server:
+    image: workflo-server:latest
+    container_name: workflo-server
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      PORT: 8000
+      MONGO_URL: mongodb://root:password@localhost:27017/workflo?authSource=admin
+      SESSION_SECRET: 'secret'
+    depends_on:
+      - mongo
+
 volumes:
   mongo-data:
     driver: local

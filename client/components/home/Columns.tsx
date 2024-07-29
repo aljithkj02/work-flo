@@ -43,7 +43,6 @@ export const Columns = () => {
             ...newItem,
             status: key
         }, true)
-        dispatch(setLoading(false));
         dispatch(setRefresh());
     }
 

@@ -6,7 +6,7 @@ import { PriorityIcon } from "@/assets/PriorityIcon"
 import { StatusIcon } from "@/assets/StatusIcon"
 import { Input } from "@/components/shared/Input"
 import { Divider, MenuItem, SelectChangeEvent } from "@mui/material"
-import { ChangeEvent, useState } from "react"
+import { ChangeEvent } from "react"
 import { Select } from "@/components/shared/Select"
 import { LocalizationProvider } from "@mui/x-date-pickers"
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -67,7 +67,7 @@ export const DrawerBody = () => {
         dispatch(setLoading(true));
         let res: boolean;
         if (isUpdate) {
-            res = await updateTask(taskData._id as string, payload as Partial<AddTaskInput>);
+            res = await updateTask(taskData._id as string, payload as AddTaskInput);
         } else {
             res = await createTask(payload as AddTaskInput);
         }
