@@ -20,12 +20,20 @@ interface IUser {
     email: string;
 }
 
+interface IData {
+    todo: ITask[];
+    inProgress: ITask[];
+    underReview: ITask[];
+    finished: ITask[];
+}
+
 interface IGlobalSlice {
     isLoading: boolean;
     user: IUser | null;
     isDrawerOpen: boolean;
     drawerStatus: StatusEnum | null;
     taskData: ITask;
+    data: IData;
 }
 
 const initialState: IGlobalSlice = {
@@ -39,6 +47,12 @@ const initialState: IGlobalSlice = {
         priority: '',
         deadline: '',
         description: ''
+    },
+    data: {
+        todo: [],
+        inProgress: [],
+        underReview: [],
+        finished: []
     }
 }
 
@@ -74,11 +88,34 @@ const globalSlice = createSlice({
                 description: ''
             }
             state.drawerStatus = null;
+        },
+        setData: (state, action) => {
+            const tempData: ITask[] = action.payload;
+            const newData: IData = {
+                todo: [],
+                inProgress: [],
+                underReview: [],
+                finished: []
+            }
+
+            tempData.map((item) => {
+                if (item.status === StatusEnum.TODO) {
+                    newData.todo.push(item);
+                } else if (item.status === StatusEnum.IN_PROGRESS) {
+                    newData.inProgress.push(item);
+                } else if (item.status === StatusEnum.UNDER_REVIEW) {
+                    newData.underReview.push(item);
+                } else if (item.status === StatusEnum.FINISHED) {
+                    newData.finished.push(item);
+                }
+            })
+
+            state.data = newData;
         }
     }
 })
 
 export default globalSlice.reducer;
 export const { setLoading, setUser, setIsDrawer, setDrawerStatus,
-        clearTaskData, setTaskData
+        clearTaskData, setTaskData, setData
     } = globalSlice.actions;

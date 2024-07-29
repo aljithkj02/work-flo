@@ -6,26 +6,20 @@ import React, { ReactNode } from 'react'
 import { CSS } from "@dnd-kit/utilities"
 import { useAppDispatch } from '@/lib/hooks/store.hook';
 import { setIsDrawer } from '@/lib/appStore/slices/global.slice';
+import { ITask } from '@/utils/types/task.type';
+import moment from 'moment';
+import { PriorityEnum } from '@/utils/enums/task.enum';
 
-export interface Data {
-    id: number,
-    title: string,
-    description: string;
-    status: string;
-    priority: string;
-    deadline: string;
-    createdAt: string;
-}
 
 interface SingleColumnProps {
     colName: string;
     id: string;
-    data: Data[]
+    data: ITask[]
 }
 
-const Draggable = ({ children, data, colName }: { children: ReactNode, data: Data, colName: string}) => {
+const Draggable = ({ children, data, colName }: { children: ReactNode, data: ITask, colName: string}) => {
     const { attributes, listeners, setNodeRef, transform } = useDraggable({
-        id: `${colName}-${data.id}`,
+        id: `${colName}-${data._id}`,
         data: data,
     })
 
@@ -71,31 +65,31 @@ export const SingleColumn = ({ colName, data, id }: SingleColumnProps) => {
                     {
                         data.map((item) => {
                             let bgColor = "bg-[#FF6B6B]"
-                            if (item.priority === "Urgent") {
+                            if (item.priority === PriorityEnum.URGENT) {
                                 bgColor = "bg-[#FF6B6B]"
-                            } else if (item.priority === "Medium") {
+                            } else if (item.priority === PriorityEnum.MEDIUM) {
                                 bgColor = "bg-[#FFA235]"
-                            } else if (item.priority === 'Low') {
+                            } else if (item.priority === PriorityEnum.LOW) {
                                 bgColor = "bg-[#0ECC5A]"
                             }
 
                             return (
-                                <Draggable key={item.id} data={item} colName={colName}>
-                                    <div key={item.id} className="p-4 bg-[#F9F9F9] border border-[#DEDEDE] rounded-lg my-4 cursor-pointer">
+                                <Draggable key={item._id} data={item} colName={colName}>
+                                    <div key={item._id} className="p-4 bg-[#F9F9F9] border border-[#DEDEDE] rounded-lg my-4 cursor-pointer">
                                         <p className="text-[#606060] text-[16px] font-medium"> {item.title} </p>
                                         <p className="text-[#797979] text-sm mt-1"> {item.description} </p>
                         
-                                        <div className={`${bgColor} px-2 py-1 inline-block rounded-lg my-2`}>
-                                            <p className="text-white font-[400] text-[12px]"> {item.priority} </p>
-                                        </div>
+                                        { item.priority && <div className={`${bgColor} px-2 py-1 inline-block rounded-lg my-2`}>
+                                            <p className="text-white font-[400] text-[12px]"> {item.priority[0].toUpperCase() + item.priority.slice(1)} </p>
+                                        </div> }
                         
-                                        <div className="flex items-center gap-2 my-1">
+                                        { item.deadline && <div className="flex items-center gap-2 my-1">
                                             <ClockIcon />
-                                            <p className="text-[#606060] text-sm font-medium">{item.deadline}</p>
-                                        </div>
+                                            <p className="text-[#606060] text-sm font-medium">{moment(item.deadline).format('YYYY-MM-DD')}</p>
+                                        </div> }
                         
                                         <div className="mt-2">
-                                            <p className="text-[#797979] text-sm font-medium">{item.createdAt}</p>
+                                            <p className="text-[#797979] text-sm font-medium">{moment(item.createdAt).fromNow()}</p>
                                         </div>
                                     </div>
                                 </Draggable>

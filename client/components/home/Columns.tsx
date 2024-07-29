@@ -1,9 +1,10 @@
 "use client"
-import { Data, SingleColumn } from "@/components/home/SingleColumn"
-import { setLoading, setUser } from "@/lib/appStore/slices/global.slice";
-import { useAppDispatch } from "@/lib/hooks/store.hook";
+import { SingleColumn } from "@/components/home/SingleColumn"
+import { setData, setLoading, setUser } from "@/lib/appStore/slices/global.slice";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks/store.hook";
 import { getTasks } from "@/services/task.service";
 import { columnsData as data } from "@/utils/constants/columnsInfo"
+import { ITask } from "@/utils/types/task.type";
 import { DndContext, DragEndEvent } from "@dnd-kit/core"
 import { restrictToWindowEdges } from '@dnd-kit/modifiers';
 import { useRouter } from "next/navigation";
@@ -17,6 +18,7 @@ enum Keys {
 } 
 
 export const Columns = () => {
+    const data = useAppSelector(state => state.global.data);
     const [columnsData, setColumnsData] = useState(data);
     const router = useRouter();
     const dispatch = useAppDispatch();
@@ -31,29 +33,33 @@ export const Columns = () => {
         if (!res) {
             dispatch(setUser(null));
             router.push('/login');
+            return;
         }
         dispatch(setLoading(false));
+        dispatch(setData(res.data));
     }
 
     const handleOnDragEnd = (e: DragEndEvent) => {
         const newItem = e.active.data.current;
         const key = e.over?.id;
         if (!key || !newItem) return;
-        if (key === (newItem as Data).status) return;
+        if (key === (newItem as ITask).status) return;
 
         console.log({newItem, key})
 
         const temp = { ...columnsData };
 
-        temp[key as Keys].push({
-            ...newItem as Data,
-            status: key as Keys
-        })
+        // temp[key as Keys].push({
+        //     ...newItem as Data,
+        //     status: key as Keys
+        // })
 
-        temp[(newItem as Data).status as Keys] = temp[(newItem as Data).status as Keys].filter((item) => item.id !== (newItem as Data).id);
+        // temp[(newItem as Data).status as Keys] = temp[(newItem as Data).status as Keys].filter((item) => item.id !== (newItem as Data).id);
 
-        setColumnsData(temp);
+        // setColumnsData(temp);
     }
+
+    console.log(data);
 
     return (
         <div className="grid grid-cols-4 rounded-lg bg-white">
@@ -61,22 +67,22 @@ export const Columns = () => {
                 <SingleColumn 
                     id="todo"
                     colName="To Do"
-                    data={columnsData.todo}
+                    data={data.todo}
                 />
                 <SingleColumn 
                     id="inProgress"
                     colName="In Progress"
-                    data={columnsData.inProgress}
+                    data={data.inProgress}
                 />
                 <SingleColumn 
                     id="underReview"
                     colName="Under Review"
-                    data={columnsData.underReview}
+                    data={data.underReview}
                 />
                 <SingleColumn 
                     id="finished"
                     colName="Finished"
-                    data={columnsData.finished}
+                    data={data.finished}
                 />
             </DndContext>
         </div>

@@ -1,14 +1,13 @@
 import api from '@/services/axios'
 import { ErrorResponseType } from '@/utils/types/error.type';
-import { AddTaskInput, AddTaskResponse } from '@/utils/types/task.type';
+import { AddTaskInput, AddTaskResponse, GetTasksResponse } from '@/utils/types/task.type';
 import { isAxiosError } from 'axios';
 import toast from 'react-hot-toast';
 
 export const getTasks = async () => {
     try {
-        const response = await api.get('/task');
+        const response = await api.get<GetTasksResponse>('/task');
 
-        console.log({response})
         return response.data;
     } catch (error) {
         if (isAxiosError(error)) {
