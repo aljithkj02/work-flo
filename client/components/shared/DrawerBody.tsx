@@ -14,8 +14,10 @@ import dayjs from 'dayjs';
 import { StyledDatePicker } from "@/components/shared/StyledDatePicker"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/store.hook"
 import { PriorityEnum, StatusEnum, TaskKeysEnum } from "@/utils/enums/task.enum"
-import { setTaskData } from "@/lib/appStore/slices/global.slice"
+import { clearTaskData, setIsDrawer, setTaskData } from "@/lib/appStore/slices/global.slice"
 import toast from "react-hot-toast"
+import { createTask } from "@/services/task.service"
+import { AddTaskInput } from "@/utils/types/task.type"
 
 export const DrawerBody = () => {
     const taskData = useAppSelector(state => state.global.taskData);
@@ -43,7 +45,7 @@ export const DrawerBody = () => {
         dispatch(setTaskData({ name, value }));
     }
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (!taskData.title) {
             toast.dismiss();
             toast.error("Title cannot be empty!");
@@ -52,17 +54,28 @@ export const DrawerBody = () => {
             toast.dismiss();
             toast.error("Status cannot be empty!");
             return;
-        } 
+        }
+        
+        let deadlineString: string = "";
+        if (taskData.deadline) {
+            const [day, month, year] = taskData.deadline.split('/').map(Number);
+            deadlineString = `${month}/${day}/${year}`;
+        }
 
         const payload = {
             title: taskData.title,
             status: taskData.status,
             ...((taskData.priority && taskData.priority !== "0") && { priority: taskData.priority}),
             ...(taskData.description && { description: taskData.description }),
-            ...(taskData.deadline && { deadline: taskData.deadline })
+            ...(deadlineString && { deadline: deadlineString })
         }
 
-        console.log(payload)
+        const res = await createTask(payload as AddTaskInput);
+        
+        if (res) {
+            dispatch(clearTaskData());
+            dispatch(setIsDrawer(false));
+        }
     }
 
     return (

@@ -73,6 +73,7 @@ const globalSlice = createSlice({
                 deadline: '',
                 description: ''
             }
+            state.drawerStatus = null;
         }
     }
 })
