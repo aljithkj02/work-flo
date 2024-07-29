@@ -2,10 +2,10 @@ import { ClockIcon } from '@/assets/ClockIcon'
 import { MenuIcon } from '@/assets/MenuIcon'
 import { PlusIcon } from '@/assets/PlusIcon'
 import { useDraggable, useDroppable } from '@dnd-kit/core';
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useState } from 'react'
 import { CSS } from "@dnd-kit/utilities"
 import { useAppDispatch } from '@/lib/hooks/store.hook';
-import { setIsDrawer } from '@/lib/appStore/slices/global.slice';
+import { setIsDrawer, setTaskData } from '@/lib/appStore/slices/global.slice';
 import { ITask } from '@/utils/types/task.type';
 import moment from 'moment';
 import { PriorityEnum } from '@/utils/enums/task.enum';
@@ -17,7 +17,7 @@ interface SingleColumnProps {
     data: ITask[]
 }
 
-const Draggable = ({ children, data, colName }: { children: ReactNode, data: ITask, colName: string}) => {
+const Draggable = ({ children, data, colName }: { children: ReactNode, data: ITask, colName: string }) => {
     const { attributes, listeners, setNodeRef, transform } = useDraggable({
         id: `${colName}-${data._id}`,
         data: data,
@@ -53,6 +53,38 @@ export const SingleColumn = ({ colName, data, id }: SingleColumnProps) => {
         dispatch(setIsDrawer(true));
     }
 
+    const handleTaskSelect = (selectedData: ITask) => {
+        const { _id, title, status, priority, deadline, description } = selectedData;
+        dispatch(setTaskData({
+            _id,
+            title,
+            status,
+            priority: priority || '',
+            deadline: deadline || '',
+            description: description || ''
+        }))
+        dispatch(setIsDrawer(true));
+    }
+
+
+    const [clickTimeout, setClickTimeout] = useState<NodeJS.Timeout | null>(null);
+
+    const handleMouseDown = (e: React.MouseEvent) => {
+        if (e.button === 0) { 
+            setClickTimeout(setTimeout(() => {
+                setClickTimeout(null);
+            }, 300));
+        }
+    };
+
+    const handleMouseUp = (e: React.MouseEvent, selectedData: ITask) => {
+        if (e.button === 0 && clickTimeout) {
+            clearTimeout(clickTimeout);
+            setClickTimeout(null); 
+            handleTaskSelect(selectedData); 
+        }
+    };
+
     return (
         <div className="col-span-1 p-3">
             <div className="flex items-center justify-between">
@@ -75,7 +107,9 @@ export const SingleColumn = ({ colName, data, id }: SingleColumnProps) => {
 
                             return (
                                 <Draggable key={item._id} data={item} colName={colName}>
-                                    <div key={item._id} className="p-4 bg-[#F9F9F9] border border-[#DEDEDE] rounded-lg my-4 cursor-pointer">
+                                    <div key={item._id} className="p-4 bg-[#F9F9F9] border border-[#DEDEDE] rounded-lg my-4 cursor-pointer" 
+                                        onMouseDown={handleMouseDown} onMouseUp={(e) => handleMouseUp(e, item)}
+                                    >
                                         <p className="text-[#606060] text-[16px] font-medium"> {item.title} </p>
                                         <p className="text-[#797979] text-sm mt-1"> {item.description} </p>
                         

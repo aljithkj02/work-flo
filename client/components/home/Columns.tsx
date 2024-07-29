@@ -43,7 +43,7 @@ export const Columns = () => {
         const newItem = e.active.data.current;
         const key = e.over?.id;
         if (!key || !newItem) return;
-        if (key === (newItem as ITask).status) return;
+        if ((key as string).toLowerCase() === (newItem as ITask).status) return;
 
         console.log({newItem, key})
 
@@ -58,8 +58,6 @@ export const Columns = () => {
 
         // setColumnsData(temp);
     }
-
-    console.log(data);
 
     return (
         <div className="grid grid-cols-4 rounded-lg bg-white">

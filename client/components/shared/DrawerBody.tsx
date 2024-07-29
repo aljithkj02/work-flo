@@ -14,7 +14,7 @@ import dayjs from 'dayjs';
 import { StyledDatePicker } from "@/components/shared/StyledDatePicker"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/store.hook"
 import { PriorityEnum, StatusEnum, TaskKeysEnum } from "@/utils/enums/task.enum"
-import { clearTaskData, setIsDrawer, setTaskData } from "@/lib/appStore/slices/global.slice"
+import { clearTaskData, setIsDrawer, setTaskDataChange } from "@/lib/appStore/slices/global.slice"
 import toast from "react-hot-toast"
 import { createTask } from "@/services/task.service"
 import { AddTaskInput } from "@/utils/types/task.type"
@@ -28,24 +28,24 @@ export const DrawerBody = () => {
 
     const handleDateChange = (date: any) => {
         const readableDate = dayjs(date).format('DD/MM/YYYY');
-        dispatch(setTaskData({ name: TaskKeysEnum.DEADLINE, value: readableDate }));
+        dispatch(setTaskDataChange({ name: TaskKeysEnum.DEADLINE, value: readableDate }));
     };
 
     const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
         const name = e.target.name;
         const value = e.target.value;
 
-        dispatch(setTaskData({ name, value }));
+        dispatch(setTaskDataChange({ name, value }));
     }
 
     const handleSelctOnChange = (e: SelectChangeEvent<unknown>) => {
         const name = e.target.name;
         const value = e.target.value;
 
-        dispatch(setTaskData({ name, value }));
+        dispatch(setTaskDataChange({ name, value }));
     }
 
-    const handleSave = async () => {
+    const handleSave = async (isUpdate: boolean) => {
         if (!taskData.title) {
             toast.dismiss();
             toast.error("Title cannot be empty!");
@@ -203,16 +203,21 @@ export const DrawerBody = () => {
             </div>
 
             <div className="flex justify-end mt-2 gap-5">
-                <button className="px-4 py-[6px] bg-blue-500 text-white rounded-lg font-medium disabled:bg-blue-400"
-                    onClick={handleSave}
-                >
-                    Save
-                </button>
-                <button className="px-3 py-[6px] bg-red-500 text-white rounded-lg font-medium disabled:bg-red-400" 
-                    disabled
-                >
+                { 
+                    taskData._id ? ( <button className="px-4 py-[6px] bg-blue-500 text-white rounded-lg font-medium disabled:bg-blue-400"
+                        onClick={() => handleSave(false)}
+                    >
+                        Update
+                    </button> ) : ( <button className="px-4 py-[6px] bg-blue-500 text-white rounded-lg font-medium disabled:bg-blue-400"
+                        onClick={() => handleSave(true)}
+                    >
+                        Save
+                    </button> ) 
+                }
+
+                { taskData._id && <button className="px-3 py-[6px] bg-red-500 text-white rounded-lg font-medium">
                     Delete
-                </button>
+                </button> }
             </div>
 
             <Divider sx={{

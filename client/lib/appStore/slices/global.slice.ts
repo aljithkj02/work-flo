@@ -72,12 +72,15 @@ const globalSlice = createSlice({
         setDrawerStatus: (state, action) => {
             state.drawerStatus = action.payload;
         },
-        setTaskData: (state, action) => {
+        setTaskDataChange: (state, action) => {
             const { name, value }: { name: TaskKeysEnum, value: string } = action.payload;
             state.taskData = {
                 ...state.taskData,
                 [name]: value
             }
+        },
+        setTaskData: (state, action) => {
+            state.taskData = action.payload;
         },
         clearTaskData: (state) => {
             state.taskData = {
@@ -117,5 +120,5 @@ const globalSlice = createSlice({
 
 export default globalSlice.reducer;
 export const { setLoading, setUser, setIsDrawer, setDrawerStatus,
-        clearTaskData, setTaskData, setData
+        clearTaskData, setTaskDataChange, setData, setTaskData
     } = globalSlice.actions;
