@@ -1,48 +1,20 @@
 import { ClockIcon } from '@/assets/ClockIcon'
 import { MenuIcon } from '@/assets/MenuIcon'
 import { PlusIcon } from '@/assets/PlusIcon'
-import { useDraggable, useDroppable } from '@dnd-kit/core';
-import React, { ReactNode, useState } from 'react'
-import { CSS } from "@dnd-kit/utilities"
+import React, { useState } from 'react'
 import { useAppDispatch } from '@/lib/hooks/store.hook';
 import { setTaskDataChange, setIsDrawer, setTaskData } from '@/lib/appStore/slices/global.slice';
 import { ITask } from '@/utils/types/task.type';
 import moment from 'moment';
 import { PriorityEnum, StatusEnum, TaskKeysEnum } from '@/utils/enums/task.enum';
+import { Droppable } from '@/components/home/Droppable';
+import { Draggable } from '@/components/home/Draggable';
 
 
 interface SingleColumnProps {
     colName: string;
     id: StatusEnum;
     data: ITask[]
-}
-
-const Draggable = ({ children, data, colName }: { children: ReactNode, data: ITask, colName: string }) => {
-    const { attributes, listeners, setNodeRef, transform } = useDraggable({
-        id: `${colName}-${data._id}`,
-        data: data,
-    })
-
-    return (
-        <div
-            ref={setNodeRef}
-            style={{ transform: CSS.Translate.toString(transform)}}
-            {...attributes}
-            {...listeners}
-        >
-            {children}
-        </div>
-    )
-}
-
-const Droppable = ({ children, id }: { children: ReactNode, id: StatusEnum }) => {
-    const { setNodeRef } = useDroppable({ id })
-
-    return (
-        <div ref={setNodeRef}>
-            { children }
-        </div>
-    )
 }
 
 export const SingleColumn = ({ colName, data, id }: SingleColumnProps) => {
