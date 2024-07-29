@@ -3,29 +3,22 @@ import { SingleColumn } from "@/components/home/SingleColumn"
 import { setData, setLoading, setUser } from "@/lib/appStore/slices/global.slice";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/store.hook";
 import { getTasks } from "@/services/task.service";
-import { columnsData as data } from "@/utils/constants/columnsInfo"
+import { StatusEnum } from "@/utils/enums/task.enum";
 import { ITask } from "@/utils/types/task.type";
 import { DndContext, DragEndEvent } from "@dnd-kit/core"
 import { restrictToWindowEdges } from '@dnd-kit/modifiers';
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react"
 
-enum Keys {
-    TODO = 'todo',
-    IN_PROGRESS = 'inProgress',
-    FINISHED = 'finished',
-    UNDER_REVIEW = 'underReview'
-} 
-
 export const Columns = () => {
-    const data = useAppSelector(state => state.global.data);
+    const {data, refresh} = useAppSelector(state => state.global);
     const [columnsData, setColumnsData] = useState(data);
     const router = useRouter();
     const dispatch = useAppDispatch();
 
     useEffect(() => {
         fetchTasks();
-    }, [])
+    }, [refresh])
 
     const fetchTasks = async () => {
         dispatch(setLoading(true));
@@ -63,22 +56,22 @@ export const Columns = () => {
         <div className="grid grid-cols-4 rounded-lg bg-white">
             <DndContext onDragEnd={handleOnDragEnd} modifiers={[restrictToWindowEdges]} >
                 <SingleColumn 
-                    id="todo"
+                    id={StatusEnum.TODO}
                     colName="To Do"
                     data={data.todo}
                 />
                 <SingleColumn 
-                    id="inProgress"
+                    id={StatusEnum.IN_PROGRESS}
                     colName="In Progress"
                     data={data.inProgress}
                 />
                 <SingleColumn 
-                    id="underReview"
+                    id={StatusEnum.UNDER_REVIEW}
                     colName="Under Review"
                     data={data.underReview}
                 />
                 <SingleColumn 
-                    id="finished"
+                    id={StatusEnum.FINISHED}
                     colName="Finished"
                     data={data.finished}
                 />

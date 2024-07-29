@@ -31,16 +31,15 @@ interface IGlobalSlice {
     isLoading: boolean;
     user: IUser | null;
     isDrawerOpen: boolean;
-    drawerStatus: StatusEnum | null;
     taskData: ITask;
     data: IData;
+    refresh: boolean;
 }
 
 const initialState: IGlobalSlice = {
     isLoading: false,
     user,
     isDrawerOpen: false,
-    drawerStatus: null,
     taskData: {
         title: '',
         status: '',
@@ -53,7 +52,8 @@ const initialState: IGlobalSlice = {
         inProgress: [],
         underReview: [],
         finished: []
-    }
+    },
+    refresh: false,
 }
 
 const globalSlice = createSlice({
@@ -68,9 +68,6 @@ const globalSlice = createSlice({
         },
         setIsDrawer: (state, action) => {
             state.isDrawerOpen = action.payload;
-        },
-        setDrawerStatus: (state, action) => {
-            state.drawerStatus = action.payload;
         },
         setTaskDataChange: (state, action) => {
             const { name, value }: { name: TaskKeysEnum, value: string } = action.payload;
@@ -90,7 +87,6 @@ const globalSlice = createSlice({
                 deadline: '',
                 description: ''
             }
-            state.drawerStatus = null;
         },
         setData: (state, action) => {
             const tempData: ITask[] = action.payload;
@@ -114,11 +110,14 @@ const globalSlice = createSlice({
             })
 
             state.data = newData;
+        },
+        setRefresh: (state) => {
+            state.refresh = !state.refresh;
         }
     }
 })
 
 export default globalSlice.reducer;
-export const { setLoading, setUser, setIsDrawer, setDrawerStatus,
+export const { setLoading, setUser, setIsDrawer, setRefresh,
         clearTaskData, setTaskDataChange, setData, setTaskData
     } = globalSlice.actions;

@@ -5,15 +5,15 @@ import { useDraggable, useDroppable } from '@dnd-kit/core';
 import React, { ReactNode, useState } from 'react'
 import { CSS } from "@dnd-kit/utilities"
 import { useAppDispatch } from '@/lib/hooks/store.hook';
-import { setIsDrawer, setTaskData } from '@/lib/appStore/slices/global.slice';
+import { setTaskDataChange, setIsDrawer, setTaskData } from '@/lib/appStore/slices/global.slice';
 import { ITask } from '@/utils/types/task.type';
 import moment from 'moment';
-import { PriorityEnum } from '@/utils/enums/task.enum';
+import { PriorityEnum, StatusEnum, TaskKeysEnum } from '@/utils/enums/task.enum';
 
 
 interface SingleColumnProps {
     colName: string;
-    id: string;
+    id: StatusEnum;
     data: ITask[]
 }
 
@@ -35,8 +35,8 @@ const Draggable = ({ children, data, colName }: { children: ReactNode, data: ITa
     )
 }
 
-const Droppable = ({ children, id }: { children: ReactNode, id: string }) => {
-    const { setNodeRef } = useDroppable({ id})
+const Droppable = ({ children, id }: { children: ReactNode, id: StatusEnum }) => {
+    const { setNodeRef } = useDroppable({ id })
 
     return (
         <div ref={setNodeRef}>
@@ -51,6 +51,7 @@ export const SingleColumn = ({ colName, data, id }: SingleColumnProps) => {
 
     const openDrawer = () => {
         dispatch(setIsDrawer(true));
+        dispatch(setTaskDataChange({ name: TaskKeysEnum.STATUS, value: id }));
     }
 
     const handleTaskSelect = (selectedData: ITask) => {

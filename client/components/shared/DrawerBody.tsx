@@ -14,7 +14,7 @@ import dayjs from 'dayjs';
 import { StyledDatePicker } from "@/components/shared/StyledDatePicker"
 import { useAppDispatch, useAppSelector } from "@/lib/hooks/store.hook"
 import { PriorityEnum, StatusEnum, TaskKeysEnum } from "@/utils/enums/task.enum"
-import { clearTaskData, setIsDrawer, setTaskDataChange } from "@/lib/appStore/slices/global.slice"
+import { clearTaskData, setIsDrawer, setRefresh, setTaskDataChange } from "@/lib/appStore/slices/global.slice"
 import toast from "react-hot-toast"
 import { createTask } from "@/services/task.service"
 import { AddTaskInput } from "@/utils/types/task.type"
@@ -73,6 +73,7 @@ export const DrawerBody = () => {
         const res = await createTask(payload as AddTaskInput);
         
         if (res) {
+            dispatch(setRefresh());
             dispatch(clearTaskData());
             dispatch(setIsDrawer(false));
         }
